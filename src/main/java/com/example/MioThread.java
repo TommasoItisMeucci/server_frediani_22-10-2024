@@ -6,58 +6,67 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-public class MioThread {
+public class MioThread extends Thread{
     private Socket s;
-    private int number = 0;
+    private int num;
 
-    public MioThread(Socket s, int num) {
-        this.s = s;
-        this.number = num;
+    public MioThread(Socket s, int n) {
+        this.s = s; 
+        this.num = n;
+        
     }
     
-    public void start() throws IOException {
-        BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-        DataOutputStream out = new DataOutputStream(s.getOutputStream());   
-        System.out.println("client collegato");
+    public void run() {
 
-        int numeroRicevuto = 0;
-        int tentativi = 0;
-        String risposta = new String();
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            DataOutputStream out = new DataOutputStream(s.getOutputStream());   
+
+            int numeroRicevuto = 0;
+            int tentativi = 0;
+            String risposta = new String();
+
+            do {
+
+                //ricevo numero
+                String s = new String();
+                s = in.readLine();
+                numeroRicevuto = Integer.parseInt(s);
+
+                //controllo
+                if(numeroRicevuto > 100 || numeroRicevuto < 0){
+                    risposta = "!";
+                    out.writeBytes(risposta + "\n");
+                }
+
+                if(numeroRicevuto > num) {
+                    risposta = ">";
+                    tentativi ++;
+                    out.writeBytes(risposta + "\n");   
+
+                }else if (numeroRicevuto < num) {
+                    risposta = "<";
+                    tentativi ++;
+                    out.writeBytes(risposta + "\n");   
+
+                }else{
+                    risposta = "=";
+                    System.out.println(tentativi);
+                    out.writeBytes(risposta + "\n");
+                    String tent = Integer.toString(tentativi);
+                    out.writeBytes(tent + "\n");
+                    break;
+                }
 
 
 
-        do {
-            //ricevo numero
-            numeroRicevuto = in.read();
-            
-            //controllo
-            if(numeroRicevuto > 100 && numeroRicevuto < 0){
-                risposta = "!";
-                out.writeBytes(risposta + "\n");
-            }
-
-            if (numeroRicevuto > number) {
-                risposta = ">";
-                System.out.println(numeroRicevuto + number);
-                tentativi ++;
-                out.writeBytes(risposta + "\n");    
-            }else if (numeroRicevuto < number) {
-                risposta = "<";
-                System.out.println(numeroRicevuto + number);
-                tentativi ++;
-                out.writeBytes(risposta + "\n");   
-            }else{
-                risposta = "=";
-                System.out.println(numeroRicevuto + number);
-                out.writeBytes(risposta + "\n");
-            }
-
-
-
-        } while (true);
-
-
+            } while (true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+     
     }
+
 }
 
     
