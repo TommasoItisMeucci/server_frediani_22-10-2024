@@ -23,7 +23,7 @@ public class MioThread extends Thread{
             DataOutputStream out = new DataOutputStream(s.getOutputStream());   
 
             int numeroRicevuto = 0;
-            int tentativi = 0;
+            int tentativi = 1;
             String risposta = new String();
 
             do {
@@ -64,7 +64,6 @@ public class MioThread extends Thread{
         } catch (Exception e) {
             e.printStackTrace();
         }
-     
     }
 
 }

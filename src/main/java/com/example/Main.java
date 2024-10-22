@@ -25,6 +25,5 @@ public class Main {
            MioThread t = new MioThread(s, numero);
            t.start();
         } while (true);
-
     }
 }
